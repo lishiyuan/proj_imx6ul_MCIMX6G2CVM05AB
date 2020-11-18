@@ -1,0 +1,2 @@
+# proj_imx6ul_MCIMX6G2CVM05AB
+芯片为imx6ul系列，具体CPU型号为：MCIMX6G2CVM05AB
