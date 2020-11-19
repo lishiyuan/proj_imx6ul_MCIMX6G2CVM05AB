@@ -381,6 +381,12 @@
                 /*MX6UL_PAD_GPIO1_IO09__GPIO1_IO09        0x17059*/ /* SD1 RESET */
                 /*MX6UL_PAD_SNVS_TAMPER0__GPIO5_IO00    0x80000000*/
 
+                /* keyboard en */
+                MX6UL_PAD_GPIO1_IO00__GPIO1_IO00 0x10B0
+                MX6UL_PAD_GPIO1_IO01__GPIO1_IO01 0x10B0
+                MX6UL_PAD_GPIO1_IO02__GPIO1_IO02 0x10B0
+                MX6UL_PAD_GPIO1_IO03__GPIO1_IO03 0x10B0
+
                 /* row行：输出模式，轮流【输出】高电平，同一时刻只能有一个高电平 */
                 MX6UL_PAD_SD1_CMD__GPIO2_IO16   0x10B0
                 MX6UL_PAD_SD1_CLK__GPIO2_IO17   0x10B0
@@ -654,7 +660,8 @@
                          fsl,pins = <
                                 MX6UL_PAD_GPIO1_IO01__GPIO1_IO01   0xb0
                                 MX6UL_PAD_GPIO1_IO02__GPIO1_IO02   0xb0
-                                MX6UL_PAD_GPIO1_IO03__GPIO1_IO03   0xb0
+                                /*lsy add*/
+                                /*MX6UL_PAD_GPIO1_IO03__GPIO1_IO03   0xb0*/
                                 MX6UL_PAD_GPIO1_IO04__GPIO1_IO04   0xb0
                          >;
                 };      
@@ -815,8 +822,9 @@
     xnur-gpio = <&gpio1 3 GPIO_ACTIVE_LOW>;
     measure-delay-time = <0xffff>;
     pre-charge-time = <0xfff>;
-    touchscreen-average-samples = <32>; 
-    status = "okay";
+    touchscreen-average-samples = <32>;
+    /* lsy */
+    status = "disabled";
 };
 
 &uart1 {
@@ -854,7 +862,9 @@
 &usbotg2 {
     dr_mode = "host";
     disable-over-current;
-    status = "okay";
+    /* lsy add*/
+    //status = "okay";
+    status = "disabled";
 };
 
 &usbphy1 {

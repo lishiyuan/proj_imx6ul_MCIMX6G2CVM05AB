@@ -71,6 +71,14 @@
 #define KEY_INPUT_MODE_PIN8_NUM 47
 
 /*
+ * keyboard en.
+ */
+#define ENABLE_GPIO1_IO00_U4A_74LVC139D_PIN_1E  0
+#define ENABLE_GPIO1_IO01_U4A_74LVC139D_PIN_1A1 1
+#define ENABLE_GPIO1_IO02_U18_74HCT541_PIN_OE2  2
+#define ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2  3
+
+/*
  * keyboard
  *
  * 矩阵键盘使用到的gpio序号：
@@ -140,7 +148,7 @@ int IsFileExist(const char* path)
 /*
  * 功能：创建KEY对应GPIO设备驱动文件
  */
-void CreateGpioNode(int gpioNum)
+void GPIO_CreatNode(int gpioNum)
 {
     char gpioNodePath[GPIO_DEV_PATH_LEN_MAX];
     char cmd[GPIO_CREATE_DEV_NODE_CMD_LEN];
@@ -171,7 +179,7 @@ void CreateGpioNode(int gpioNum)
  * 返回值：VOS_OK :设置成功
  *         其他   :设置失败
  */
-int SetGpioMode(int gpioNum, char *mode)
+int GPIO_SetDirection(int gpioNum, char *mode)
 {
     char cmd[GPIO_CREATE_DEV_NODE_CMD_LEN];
 
@@ -204,7 +212,7 @@ int SetGpioMode(int gpioNum, char *mode)
  * 参数  ：gpioNum: GPIO序号
  *         level  : 0、1高低电平
  */
-void SetGpioLevel(int gpioNum, int level)
+void GPIO_SetLevel(int gpioNum, int level)
 {
     char cmd[GPIO_CREATE_DEV_NODE_CMD_LEN];
 
@@ -230,7 +238,7 @@ void SetGpioLevel(int gpioNum, int level)
  * 功能  ：获取gpio电平
  * 返回值：gpio电平
  */
-int GetGpioLevel(int gpioNum)
+int GPIO_GetLevel(int gpioNum)
 {
     FILE *fp = NULL;
     int level;
@@ -262,7 +270,7 @@ int GetGpioLevel(int gpioNum)
 /*
  * 功能：匹配按下的按键，并打印用户交互信息
  */
-void SetKeyBoardFlag(KeyBoard *keyBoard, int gpioScanRow, int gpioScanCol)
+static void SetKeyBoardFlag(KeyBoard *keyBoard, int gpioScanRow, int gpioScanCol)
 {
     memset(keyBoard, 0, sizeof(KeyBoard));
 
@@ -341,7 +349,7 @@ void SetKeyBoardFlag(KeyBoard *keyBoard, int gpioScanRow, int gpioScanCol)
  * 功能：获取按下的按键，
  * 参数：keyBoard为输出参数，结构体，对应成员置1时表示按键按下。
  */
-void GetPressKey(KeyBoard *keyBoard)
+static void GetPressKey(KeyBoard *keyBoard)
 {
     int i;
     int row;
@@ -354,22 +362,22 @@ void GetPressKey(KeyBoard *keyBoard)
 
     /* 1. 创建所有GPIO节点 */
     for (i = 40; i <= 51; i++) {
-        CreateGpioNode(i);
+        GPIO_CreatNode(i);
     }
 
     /* 2. GPIO48 - 51设置为输出模式，且默认均输出低电平 */
     for (row = 48; row <= 51; row++) {
-        if (SetGpioMode(row, GPIO_DIRECTION_OUTPUT) != VOS_OK) {
+        if (GPIO_SetDirection(row, GPIO_DIRECTION_OUTPUT) != VOS_OK) {
             printf("set gpio mode failed!\r\n");
             return ;
         }
 
-        SetGpioLevel(row, GPIO_LEVEL_LOW);  /* 默认低电平 */
+        GPIO_SetLevel(row, GPIO_LEVEL_LOW);  /* 默认低电平 */
     }
 
     /* 3. GPIO40 - 47设置为输入模式 */
     for (col = 40; col <= 47; col++) {
-        if (SetGpioMode(col, GPIO_DIRECTION_INPUT) != VOS_OK) {
+        if (GPIO_SetDirection(col, GPIO_DIRECTION_INPUT) != VOS_OK) {
             printf("set gpio mode failed!\r\n");
             return ;
         }
@@ -391,14 +399,14 @@ void GetPressKey(KeyBoard *keyBoard)
         for (row = 48; row <= 51; row++) {
             /* 先将所有行GPIO全置零，然后将当前扫描的行GPIO置1 */
             for (i = 48; i <= 51; i++) {
-                SetGpioLevel(i, GPIO_LEVEL_LOW);
+                GPIO_SetLevel(i, GPIO_LEVEL_LOW);
             }
-            SetGpioLevel(row, GPIO_LEVEL_HIGH);
+            GPIO_SetLevel(row, GPIO_LEVEL_HIGH);
 
             /* 扫描列GPIO输入 */
             for (col = 40; col <= 47; col++) {
-                if (GetGpioLevel(col) == GPIO_LEVEL_HIGH) {
-                    while (GetGpioLevel(col) == GPIO_LEVEL_HIGH); /* 等待按键弹起才算一次按键有效，否则阻塞等待 */
+                if (GPIO_GetLevel(col) == GPIO_LEVEL_HIGH) {
+                    while (GPIO_GetLevel(col) == GPIO_LEVEL_HIGH); /* 等待按键弹起才算一次按键有效，否则阻塞等待 */
 
                     printf("\r\n");
                     printf("row : GPIO%d: GPIO2_%d\r\n", row, row - 32);
@@ -413,11 +421,55 @@ void GetPressKey(KeyBoard *keyBoard)
     }
 }
 
+/*
+ * 功能：使能KeyBoard
+ */
+void OKIMX6UL_KeyBoardEnable(KeyBoard *keyBoard)
+{
+    /* 74LVC139D */
+    /* GPIO1_IO00 */
+    GPIO_CreatNode(ENABLE_GPIO1_IO00_U4A_74LVC139D_PIN_1E);
+    GPIO_SetDirection(ENABLE_GPIO1_IO00_U4A_74LVC139D_PIN_1E, GPIO_DIRECTION_OUTPUT);
+    GPIO_SetLevel(ENABLE_GPIO1_IO00_U4A_74LVC139D_PIN_1E, GPIO_LEVEL_LOW);
+    /* GPIO1_IO01 */
+    GPIO_CreatNode(ENABLE_GPIO1_IO01_U4A_74LVC139D_PIN_1A1);
+    GPIO_SetDirection(ENABLE_GPIO1_IO01_U4A_74LVC139D_PIN_1A1, GPIO_DIRECTION_OUTPUT);
+    GPIO_SetLevel(ENABLE_GPIO1_IO01_U4A_74LVC139D_PIN_1A1, GPIO_LEVEL_HIGH);
+
+    /* 74HCT541 U18 */
+    /* GPIO1_IO02 */
+    GPIO_CreatNode(ENABLE_GPIO1_IO02_U18_74HCT541_PIN_OE2);
+    GPIO_SetDirection(ENABLE_GPIO1_IO02_U18_74HCT541_PIN_OE2, GPIO_DIRECTION_OUTPUT);
+    GPIO_SetLevel(ENABLE_GPIO1_IO02_U18_74HCT541_PIN_OE2, GPIO_LEVEL_HIGH);
+
+    /* 74HCT541 U16 */
+    /* GPIO1_IO03 */
+    GPIO_CreatNode(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2);
+    GPIO_SetDirection(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2, GPIO_DIRECTION_OUTPUT);
+    GPIO_SetLevel(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2, GPIO_LEVEL_LOW);
+
+    /* KeyBoard start */
+    GetPressKey(keyBoard);
+}
+
+/*
+ * 功能：禁用KeyBoard
+ */
+void OKIMX6UL_KeyBoardDisable(KeyBoard *keyBoard)
+{
+    /* GPIO1_IO03 */
+    GPIO_CreatNode(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2);
+    GPIO_SetDirection(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2, GPIO_DIRECTION_OUTPUT);
+    GPIO_SetLevel(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2, GPIO_LEVEL_HIGH);
+
+    memset(keyBoard, 0, sizeof(KeyBoard));  /* 注意：sizeof参数是数据类型，一定不要是指针变量 */
+}
+
 int main(int argc, char *argv[])
 {
     KeyBoard keyBoard;
 
-    GetPressKey(&keyBoard);
+    OKIMX6UL_KeyBoardEnable(&keyBoard);
 
     return 0;
 }
