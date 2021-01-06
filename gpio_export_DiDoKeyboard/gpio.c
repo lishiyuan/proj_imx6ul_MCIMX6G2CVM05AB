@@ -14,7 +14,7 @@
 /*
  * 功能：根据GPIO序号创建对应的设备驱动文件
  */
-void GPIO_CreatNode(int gpioNum)
+void GPIO_CreateNode(int gpioNum)
 {
     char gpioNodePath[GPIO_DEV_PATH_LEN_MAX];
     char cmd[GPIO_CREATE_DEV_NODE_CMD_LEN];

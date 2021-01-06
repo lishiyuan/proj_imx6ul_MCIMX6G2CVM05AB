@@ -39,7 +39,7 @@
 /*
  * gpio function
  */
-void GPIO_CreatNode(int gpioNum);
+void GPIO_CreateNode(int gpioNum);
 int GPIO_SetDirection(int gpioNum, char *direction);
 void GPIO_SetLevel(int gpioNum, int level);
 int GPIO_GetLevel(int gpioNum);
