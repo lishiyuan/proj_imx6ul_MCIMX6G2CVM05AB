@@ -8,8 +8,8 @@
 #ifndef DIDO_H
 #define DIDO_H
 
-int DO_Test(int argc, char *argv[]);
 int DO_Enable(int channel, int level);
+int DI_Enable(int channel);
 
 #endif
 

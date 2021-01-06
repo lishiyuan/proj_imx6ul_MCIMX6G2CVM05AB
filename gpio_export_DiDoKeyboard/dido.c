@@ -9,7 +9,9 @@
 #include "gpio.h"
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
+
+#define FALSE 0
+#define TRUE  1
 
 #define DO_CHANNEL_GPIO_NUM_MIN 40
 #define DO_CHANNEL_GPIO_NUM_MAX 47
@@ -17,9 +19,12 @@
 #define DO_CHANNEL_NUM_MAX 7
 
 /*
- * DO功能初始化
+ * 功能：DO功能初始化
+ * 参数：direction：dido模式
+ *           out：表示do模式
+ *           in ：表示di模式
  */
-static void DO_Init(void)
+static void DIDO_Init(char *direction)
 {
     int channel;
 
@@ -30,7 +35,7 @@ static void DO_Init(void)
 
     /* 设置为输出模式，且全部默认输出0 */
     for (channel = DO_CHANNEL_GPIO_NUM_MIN; channel <= DO_CHANNEL_GPIO_NUM_MAX; channel++) {
-        GPIO_SetDirection(channel, GPIO_DIRECTION_OUTPUT);
+        GPIO_SetDirection(channel, direction);
         GPIO_SetLevel(channel, 0);
     }
 }
@@ -42,6 +47,8 @@ static void DO_Init(void)
  */
 int DO_Enable(int channel, int level)
 {
+    static int isDoInitializedFlag = FALSE;
+
     if ((channel > DO_CHANNEL_NUM_MAX) || (channel < DO_CHANNEL_NUM_MIN)) {
         printf("do channel error.\r\n");
         return VOS_ERROR;
@@ -56,29 +63,45 @@ int DO_Enable(int channel, int level)
     channel = channel + DO_CHANNEL_GPIO_NUM_MIN;
     DEBUG_INFO("channel = %d, level = %d\r\n", channel, level);
 
-    DO_Init();
+    /* 只初始化一次即可 */
+    if (isDoInitializedFlag != TRUE) {
+        DIDO_Init(GPIO_DIRECTION_OUTPUT);
+        isDoInitializedFlag = TRUE;
+    }
+
     GPIO_SetLevel(channel, level);
 
     return level;
 }
 
 /*
- * do测试代码
+ * 功能  ：捕获DI通道电平
+ * 参数  ：channel：DI通道，范围：0-8
+ * 返回值：捕获到的电平
  */
-int DO_Test(int argc, char *argv[])
+int DI_Enable(int channel)
 {
-    int channel;
     int level;
+    static int isDiInitializedFlag = FALSE;
 
-    if (argc != 3) {
-        printf("usage:\r\n");
-        printf("    ./xxx [channel:0-7] [level:0/1]\r\n");
+    if ((channel > DO_CHANNEL_NUM_MAX) || (channel < DO_CHANNEL_NUM_MIN)) {
+        printf("do channel error.\r\n");
         return VOS_ERROR;
     }
 
-    channel = atoi(argv[1]);
-    level = atoi(argv[2]);
-    DO_Enable(channel, level);
+    /* channel0 - 7 对应 gpio40 - 47 */
+    channel = channel + DO_CHANNEL_GPIO_NUM_MIN;
 
-    return VOS_OK;
+    /* 只初始化一次即可 */
+    if (isDiInitializedFlag != TRUE) {
+        DIDO_Init(GPIO_DIRECTION_INPUT);
+        isDiInitializedFlag = TRUE;
+    }
+
+    //return GPIO_GetLevel(channel);
+
+    level = GPIO_GetLevel(channel);
+    DEBUG_INFO("channel = %d, level = %d\r\n", channel, level);
+    return level;
 }
+

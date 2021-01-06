@@ -11,14 +11,16 @@ CROSS_COMPILE	Makefile	/^CROSS_COMPILE = arm-linux-gnueabihf-$/;"	m
 DEBUG	common.h	27;"	d
 DEBUG_INFO	common.h	30;"	d
 DEBUG_INFO	common.h	32;"	d
-DO_CHANNEL_GPIO_NUM_MAX	do.c	15;"	d	file:
-DO_CHANNEL_GPIO_NUM_MIN	do.c	14;"	d	file:
-DO_CHANNEL_NUM_MAX	do.c	17;"	d	file:
-DO_CHANNEL_NUM_MIN	do.c	16;"	d	file:
-DO_Enable	do.c	/^int DO_Enable(int channel, int level)$/;"	f
-DO_H	do.h	9;"	d
-DO_Init	do.c	/^static void DO_Init(void)$/;"	f	file:
-DO_Test	do.c	/^int DO_Test(int argc, char *argv[])$/;"	f
+DIDO_H	dido.h	9;"	d
+DIDO_Init	dido.c	/^static void DIDO_Init(char *direction)$/;"	f	file:
+DI_Enable	dido.c	/^int DI_Enable(int channel)$/;"	f
+DI_Test	test.c	/^int DI_Test(int argc, char *argv[])$/;"	f
+DO_CHANNEL_GPIO_NUM_MAX	dido.c	14;"	d	file:
+DO_CHANNEL_GPIO_NUM_MIN	dido.c	13;"	d	file:
+DO_CHANNEL_NUM_MAX	dido.c	16;"	d	file:
+DO_CHANNEL_NUM_MIN	dido.c	15;"	d	file:
+DO_Enable	dido.c	/^int DO_Enable(int channel, int level)$/;"	f
+DO_Test	test.c	/^int DO_Test(int argc, char *argv[])$/;"	f
 ENABLE_GPIO1_IO00_U4A_74LVC139D_PIN_1E	keyboard.c	38;"	d	file:
 ENABLE_GPIO1_IO01_U4A_74LVC139D_PIN_1A1	keyboard.c	39;"	d	file:
 ENABLE_GPIO1_IO02_U18_74HCT541_PIN_OE2	keyboard.c	40;"	d	file:
@@ -55,11 +57,13 @@ KEY_OUTPUT_MODE_PIN3_NUM	keyboard.c	20;"	d	file:
 KEY_OUTPUT_MODE_PIN4_NUM	keyboard.c	21;"	d	file:
 KEY_OUTPUT_PIN_NUMS	keyboard.c	17;"	d	file:
 KeyBoard	keyboard.h	/^} KeyBoard;$/;"	t	typeref:struct:__anon1
+KeyboardTest	test.c	/^void KeyboardTest(void)$/;"	f
 OBJ	Makefile	/^OBJ := $(patsubst %.c,%.o,$(SRC))          #变量OBJ用于存放：所有.c文件名后缀更改为.o$/;"	m
 OKIMX6UL_KeyBoardDisable	keyboard.c	/^void OKIMX6UL_KeyBoardDisable(KeyBoard *keyBoard)$/;"	f
 OKIMX6UL_KeyBoardEnable	keyboard.c	/^void OKIMX6UL_KeyBoardEnable(KeyBoard *keyBoard)$/;"	f
 SRC	Makefile	/^SRC := $(wildcard *.c)                     #变量SRC用于存放：遍历目录下所有的.c文件$/;"	m
 SetKeyBoardFlag	keyboard.c	/^static void SetKeyBoardFlag(KeyBoard *keyBoard, int gpioScanRow, int gpioScanCol)$/;"	f	file:
+TEST_H	test.h	9;"	d
 VERSION	Makefile	/^VERSION = 1.0.0$/;"	m
 VOS_ERROR	common.h	21;"	d
 VOS_FALSE	common.h	17;"	d
