@@ -5,8 +5,8 @@
  * 创建时间 ：2021/01/06 13:22
  */
 
-#ifndef DO_H
-#define DO_H
+#ifndef DIDO_H
+#define DIDO_H
 
 int DO_Test(int argc, char *argv[]);
 int DO_Enable(int channel, int level);
