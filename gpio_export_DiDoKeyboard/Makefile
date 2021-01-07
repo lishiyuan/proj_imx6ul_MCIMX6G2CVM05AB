@@ -5,7 +5,7 @@ CC = gcc
 
 SRC := $(wildcard *.c)                     #变量SRC用于存放：遍历目录下所有的.c文件
 OBJ := $(patsubst %.c,%.o,$(SRC))          #变量OBJ用于存放：所有.c文件名后缀更改为.o
-APP := app_do_test                         #最终app
+APP := app_key_di_do_test                  #最终app
 
 $(APP):$(SRC)
 	$(CROSS_COMPILE)$(CC) $^ -o $(APP)
