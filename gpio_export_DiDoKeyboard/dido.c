@@ -61,7 +61,7 @@ int DO_Enable(int channel, int level)
 
     /* channel0 - 7 对应 gpio40 - 47 */
     channel = channel + DO_CHANNEL_GPIO_NUM_MIN;
-    DEBUG_INFO("channel = %d, level = %d\r\n", channel, level);
+    lsydebug("channel = %d, level = %d\r\n", channel, level);
 
     /* 只初始化一次即可 */
     if (isDoInitializedFlag != TRUE) {
@@ -101,7 +101,7 @@ int DI_Enable(int channel)
     //return GPIO_GetLevel(channel);
 
     level = GPIO_GetLevel(channel);
-    DEBUG_INFO("channel = %d, level = %d\r\n", channel, level);
+    lsydebug("channel = %d, level = %d\r\n", channel, level);
     return level;
 }
 

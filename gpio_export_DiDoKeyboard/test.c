@@ -30,7 +30,7 @@ int DI_Test(int argc, char *argv[])
     }
 
     channel = atoi(argv[1]);
-    DEBUG_INFO("channel = %d\r\n", channel);
+    lsydebug("channel = %d\r\n", channel);
 
     while (1) {
         level = DI_Enable(channel);
@@ -68,7 +68,7 @@ int DO_Test(int argc, char *argv[])
  */
 void KeyboardTest(void)
 {
-    KeyBoard keyBoard;
+    /*KeyBoard keyBoard;*/
 
-    OKIMX6UL_KeyBoardEnable(&keyBoard);
+    /*OKIMX6UL_KeyBoardEnable(&keyBoard);*/
 }

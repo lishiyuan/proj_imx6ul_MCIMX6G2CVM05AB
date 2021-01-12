@@ -32,13 +32,6 @@
 #define KEY_INPUT_MODE_PIN7_NUM 46
 #define KEY_INPUT_MODE_PIN8_NUM 47
 
-/*
- * keyboard en.
- */
-#define ENABLE_GPIO1_IO00_U4A_74LVC139D_PIN_1E  0
-#define ENABLE_GPIO1_IO01_U4A_74LVC139D_PIN_1A1 1
-#define ENABLE_GPIO1_IO02_U18_74HCT541_PIN_OE2  2
-#define ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2  3
 
 /*
  * 功能：匹配按下的按键，并打印用户交互信息
@@ -122,7 +115,7 @@ static void SetKeyBoardFlag(KeyBoard *keyBoard, int gpioScanRow, int gpioScanCol
  * 功能：获取按下的按键，
  * 参数：keyBoard为输出参数，结构体，对应成员置1时表示按键按下。
  */
-static void GetPressKey(KeyBoard *keyBoard)
+void GetPressKey(KeyBoard *keyBoard)
 {
     int i;
     int row;
@@ -194,47 +187,4 @@ static void GetPressKey(KeyBoard *keyBoard)
     }
 }
 
-/*
- * 功能：使能KeyBoard
- */
-void OKIMX6UL_KeyBoardEnable(KeyBoard *keyBoard)
-{
-    /* 74LVC139D U4A */
-    /* GPIO1_IO00 */
-    GPIO_CreateNode(ENABLE_GPIO1_IO00_U4A_74LVC139D_PIN_1E);
-    GPIO_SetDirection(ENABLE_GPIO1_IO00_U4A_74LVC139D_PIN_1E, GPIO_DIRECTION_OUTPUT);
-    GPIO_SetLevel(ENABLE_GPIO1_IO00_U4A_74LVC139D_PIN_1E, GPIO_LEVEL_LOW);
-    /* GPIO1_IO01 */
-    GPIO_CreateNode(ENABLE_GPIO1_IO01_U4A_74LVC139D_PIN_1A1);
-    GPIO_SetDirection(ENABLE_GPIO1_IO01_U4A_74LVC139D_PIN_1A1, GPIO_DIRECTION_OUTPUT);
-    GPIO_SetLevel(ENABLE_GPIO1_IO01_U4A_74LVC139D_PIN_1A1, GPIO_LEVEL_HIGH);
-
-    /* 74HCT541 U18 */
-    /* GPIO1_IO02 */
-    GPIO_CreateNode(ENABLE_GPIO1_IO02_U18_74HCT541_PIN_OE2);
-    GPIO_SetDirection(ENABLE_GPIO1_IO02_U18_74HCT541_PIN_OE2, GPIO_DIRECTION_OUTPUT);
-    GPIO_SetLevel(ENABLE_GPIO1_IO02_U18_74HCT541_PIN_OE2, GPIO_LEVEL_HIGH);
-
-    /* 74HCT541 U16 */
-    /* GPIO1_IO03 */
-    GPIO_CreateNode(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2);
-    GPIO_SetDirection(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2, GPIO_DIRECTION_OUTPUT);
-    GPIO_SetLevel(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2, GPIO_LEVEL_LOW);
-
-    /* KeyBoard start */
-    GetPressKey(keyBoard);
-}
-
-/*
- * 功能：禁用KeyBoard
- */
-void OKIMX6UL_KeyBoardDisable(KeyBoard *keyBoard)
-{
-    /* GPIO1_IO03 */
-    GPIO_CreateNode(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2);
-    GPIO_SetDirection(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2, GPIO_DIRECTION_OUTPUT);
-    GPIO_SetLevel(ENABLE_GPIO1_IO03_U16_74HCT541_PIN_OE2, GPIO_LEVEL_HIGH);
-
-    memset(keyBoard, 0, sizeof(KeyBoard));  /* 注意：sizeof参数是数据类型，一定不要是指针变量 */
-}
 

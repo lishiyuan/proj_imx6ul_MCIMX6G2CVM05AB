@@ -22,14 +22,14 @@
 
 /*
  * DEBUG调试信息：
- *     使用：DEBUG_INFO()，打印调试log
+ *     使用：lsydebug()，打印调试log
  */
 #define DEBUG 1
 
 #ifdef DEBUG
-#define DEBUG_INFO(format, ...) printf(format, ##__VA_ARGS__)
+#define lsydebug(format, ...) printf(format, ##__VA_ARGS__)
 #else
-#define DEBUG_INFO(format, ...)
+#define lsydebug(format, ...)
 #endif
 
 /*
